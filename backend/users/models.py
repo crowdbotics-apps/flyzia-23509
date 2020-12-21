@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
@@ -13,10 +14,16 @@ class User(AbstractUser):
     may lead to unexpected bugs and or behaviors in the automated flows provided
     by Crowdbotics. Change it at your own risk.
     """
-
-    # First Name and Last Name do not cover name patterns
-    # around the globe.
-    name = models.CharField(_("Name of User"), blank=True, null=True, max_length=255)
+    name = models.CharField(
+        null=True,
+        blank=True,
+        max_length=255,
+    )
+    group = models.ManyToManyField(
+        "course.Group",
+        blank=True,
+        related_name="user_group",
+    )
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
